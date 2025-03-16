@@ -5,15 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.ran</groupId>
-        <artifactId>Xoj</artifactId>
+        <artifactId>common</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>modules</artifactId>
-    <packaging>pom</packaging>
-    <modules>
-        <module>system</module>
-    </modules>
+    <artifactId>common-swagger</artifactId>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
@@ -22,13 +18,9 @@
     </properties>
     <dependencies>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.ran</groupId>
-            <artifactId>common-core</artifactId>
-            <version>${common-core.version}</version>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>${springdoc-openapi.version}</version>
         </dependency>
     </dependencies>
 

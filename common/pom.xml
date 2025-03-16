@@ -9,10 +9,11 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>modules</artifactId>
+    <artifactId>common</artifactId>
     <packaging>pom</packaging>
     <modules>
-        <module>system</module>
+        <module>common-core</module>
+        <module>common-swagger</module>
     </modules>
 
     <properties>
@@ -20,16 +21,5 @@
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-    <dependencies>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.ran</groupId>
-            <artifactId>common-core</artifactId>
-            <version>${common-core.version}</version>
-        </dependency>
-    </dependencies>
 
 </project>
