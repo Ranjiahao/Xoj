@@ -10,9 +10,10 @@
 	</parent>
 	<packaging>pom</packaging>
 	<modules>
-		<module>modules</module>
-		<module>common</module>
-	</modules>
+		<module>oj-modules</module>
+		<module>oj-common</module>
+        <module>oj-gateway</module>
+    </modules>
 	<groupId>com.ran</groupId>
 	<artifactId>Xoj</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
@@ -27,9 +28,19 @@
 		<spring-cloud.version>2023.0.5</spring-cloud.version>
 		<spring-cloud-alibaba.version>2023.0.3.2</spring-cloud-alibaba.version>
 		<mybatis-plus.version>3.5.10.1</mybatis-plus.version>
-		<common-core.version>0.0.1-SNAPSHOT</common-core.version>
-		<common-swagger.version>0.0.1-SNAPSHOT</common-swagger.version>
-		<springdoc-openapi.version>2.8.5</springdoc-openapi.version>
+		<fastjson.version>2.0.56</fastjson.version>
+		<jjwt.version>0.12.6</jjwt.version>
+		<hutool-all.version>5.8.36</hutool-all.version>
+		<transmittable-thread-local.version>2.14.5</transmittable-thread-local.version>
+
+		<oj-common-core.version>0.0.1-SNAPSHOT</oj-common-core.version>
+		<oj-common-swagger.version>0.0.1-SNAPSHOT</oj-common-swagger.version>
+		<oj-common-security.version>0.0.1-SNAPSHOT</oj-common-security.version>
+		<oj-common-redis.version>0.0.1-SNAPSHOT</oj-common-redis.version>
+		<oj-common-mybatis.version>0.0.1-SNAPSHOT</oj-common-mybatis.version>
+		<oj-common-message.version>0.0.1-SNAPSHOT</oj-common-message.version>
+		<oj-common-file.version>0.0.1-SNAPSHOT</oj-common-file.version>
+		<oj-common-elsticsearch.version>0.0.1-SNAPSHOT</oj-common-elsticsearch.version>
 	</properties>
 
 	<dependencies>
