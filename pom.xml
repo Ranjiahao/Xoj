@@ -13,6 +13,7 @@
 		<module>oj-modules</module>
 		<module>oj-common</module>
         <module>oj-gateway</module>
+        <module>oj-common/oj-common-message</module>
     </modules>
 	<groupId>com.ran</groupId>
 	<artifactId>Xoj</artifactId>

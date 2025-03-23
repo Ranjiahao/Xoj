@@ -1,0 +1,2 @@
+com.ran.common.message.service.AliSmsService
+com.ran.common.message.config.AliSmsConfig
