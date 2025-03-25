@@ -1,0 +1,3 @@
+com.ran.common.file.config.OSSConfig
+com.ran.common.file.config.OSSProperties
+com.ran.common.file.service.OSSService
