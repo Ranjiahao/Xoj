@@ -18,6 +18,7 @@ import com.ran.system.domain.exam.vo.ExamDetailVO;
 import com.ran.system.domain.exam.vo.ExamVO;
 import com.ran.system.domain.question.Question;
 import com.ran.system.domain.question.vo.QuestionVO;
+import com.ran.system.manager.ExamCacheManager;
 import com.ran.system.mapper.exam.ExamMapper;
 import com.ran.system.mapper.exam.ExamQuestionMapper;
 import com.ran.system.mapper.question.QuestionMapper;
@@ -44,6 +45,9 @@ public class ExamServiceImpl extends ServiceImpl<ExamQuestionMapper, ExamQuestio
     @Autowired
     private ExamQuestionMapper examQuestionMapper;
 
+    @Autowired
+    private ExamCacheManager examCacheManager;
+
     @Override
     public List<ExamVO> list(ExamQueryDTO examQueryDTO) {
         PageHelper.startPage(examQueryDTO.getPageNum(), examQueryDTO.getPageSize());
@@ -51,11 +55,12 @@ public class ExamServiceImpl extends ServiceImpl<ExamQuestionMapper, ExamQuestio
     }
 
     @Override
-    public int add(ExamAddDTO examAddDTO) {
+    public String add(ExamAddDTO examAddDTO) {
         Exam exam = new Exam();
         BeanUtil.copyProperties(examAddDTO, exam);
         checkExamSaveParams(exam);
-        return examMapper.insert(exam);
+        examMapper.insert(exam);
+        return exam.getExamId().toString();
     }
 
     @Override
@@ -132,13 +137,14 @@ public class ExamServiceImpl extends ServiceImpl<ExamQuestionMapper, ExamQuestio
         if (exam.getEndTime().isBefore(LocalDateTime.now())) {
             throw new ServiceException(ResultCode.EXAM_IS_FINISH);
         }
-        // select count(0) from tb_exam_question where exam_id = #{examId}
         Long count = examQuestionMapper
                 .selectCount(new LambdaQueryWrapper<ExamQuestion>().eq(ExamQuestion::getExamId, examId));
         if (count == null || count <= 0) {
             throw new ServiceException(ResultCode.EXAM_NOT_HAS_QUESTION);
         }
         exam.setStatus(Constants.TRUE);
+        // 将新发布的竞赛数据存储到redis
+        examCacheManager.addCache(exam);
         return examMapper.updateById(exam);
     }
 
@@ -150,6 +156,7 @@ public class ExamServiceImpl extends ServiceImpl<ExamQuestionMapper, ExamQuestio
             throw new ServiceException(ResultCode.EXAM_IS_FINISH);
         }
         exam.setStatus(Constants.FALSE);
+        examCacheManager.deleteCache(examId);
         return examMapper.updateById(exam);
     }
 
