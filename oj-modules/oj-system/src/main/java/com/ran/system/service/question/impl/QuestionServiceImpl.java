@@ -10,8 +10,11 @@ import com.ran.system.domain.question.Question;
 import com.ran.system.domain.question.dto.QuestionAddDTO;
 import com.ran.system.domain.question.dto.QuestionEditDTO;
 import com.ran.system.domain.question.dto.QuestionQueryDTO;
+import com.ran.system.domain.question.es.QuestionES;
 import com.ran.system.domain.question.vo.QuestionDetailVO;
 import com.ran.system.domain.question.vo.QuestionVO;
+import com.ran.system.elasticsearch.QuestionRepository;
+import com.ran.system.manager.QuestionCacheManager;
 import com.ran.system.mapper.question.QuestionMapper;
 import com.ran.system.service.question.IQuestionService;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +30,12 @@ public class QuestionServiceImpl implements IQuestionService {
     @Autowired
     private QuestionMapper questionMapper;
 
+    @Autowired
+    private QuestionRepository questionRepository;
+
+    @Autowired
+    private QuestionCacheManager questionCacheManager;
+
     @Override
     public List<QuestionVO> list(QuestionQueryDTO questionQueryDTO) {
         PageHelper.startPage(questionQueryDTO.getPageNum(), questionQueryDTO.getPageSize());
@@ -34,7 +43,7 @@ public class QuestionServiceImpl implements IQuestionService {
     }
 
     @Override
-    public int add(QuestionAddDTO questionAddDTO) {
+    public boolean add(QuestionAddDTO questionAddDTO) {
         List<Question> questionList = questionMapper.selectList(new LambdaQueryWrapper<Question>()
                 .eq(Question::getTitle, questionAddDTO.getTitle()));
         if (CollectionUtil.isNotEmpty(questionList)) {
@@ -42,7 +51,15 @@ public class QuestionServiceImpl implements IQuestionService {
         }
         Question question = new Question();
         BeanUtil.copyProperties(questionAddDTO, question);
-        return questionMapper.insert(question);
+        int insert = questionMapper.insert(question);
+        if (insert <= 0) {
+            return false;
+        }
+        QuestionES questionES = new QuestionES();
+        BeanUtil.copyProperties(question, questionES);
+        questionRepository.save(questionES);
+        questionCacheManager.addCache(question.getQuestionId());
+        return true;
     }
 
     @Override
@@ -57,12 +74,17 @@ public class QuestionServiceImpl implements IQuestionService {
     public int edit(QuestionEditDTO questionEditDTO) {
         Question oldQuestion = getQuestion(questionEditDTO.getQuestionId());
         BeanUtil.copyProperties(questionEditDTO, oldQuestion);
+        QuestionES questionES = new QuestionES();
+        BeanUtil.copyProperties(oldQuestion, questionES);
+        questionRepository.save(questionES);
         return questionMapper.updateById(oldQuestion);
     }
 
     @Override
     public int delete(Long questionId) {
         getQuestion(questionId);
+        questionRepository.deleteById(questionId);
+        questionCacheManager.deleteCache(questionId);
         return questionMapper.deleteById(questionId);
     }
 
