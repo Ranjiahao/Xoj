@@ -7,6 +7,7 @@ import com.ran.system.domain.user.User;
 import com.ran.system.domain.user.dto.UserDTO;
 import com.ran.system.domain.user.dto.UserQueryDTO;
 import com.ran.system.domain.user.vo.UserVO;
+import com.ran.system.manager.UserCacheManager;
 import com.ran.system.mapper.user.UserMapper;
 import com.ran.system.service.user.IUserService;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +23,9 @@ public class UserServiceImpl implements IUserService {
     @Autowired
     private UserMapper userMapper;
 
+    @Autowired
+    private UserCacheManager userCacheManager;
+
     @Override
     public List<UserVO> list(UserQueryDTO userQueryDTO) {
         PageHelper.startPage(userQueryDTO.getPageNum(), userQueryDTO.getPageSize());
@@ -35,6 +39,7 @@ public class UserServiceImpl implements IUserService {
             throw new ServiceException(ResultCode.FAILED_USER_NOT_EXISTS);
         }
         user.setStatus(userDTO.getStatus());
+        userCacheManager.updateStatus(user.getUserId(), userDTO.getStatus());
         return userMapper.updateById(user);
     }
 }
