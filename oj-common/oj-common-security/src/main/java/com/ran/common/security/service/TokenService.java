@@ -9,6 +9,7 @@ import com.ran.common.core.utils.JwtUtils;
 import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -21,6 +22,18 @@ public class TokenService {
 
     @Autowired
     private RedisService redisService;
+
+    /**
+     * 登录过期时间，默认720分钟
+     */
+    @Value("${login.expiration:720}")
+    private Long exp;
+
+    /**
+     * 刷新缓存时间阈值，默认100分钟
+     */
+    @Value("${login.expiration:100}")
+    private Long refreshTime;
 
     public String createToken(Long userId, String secret, Integer identity, String nickName, String headImage) {
         String userKey = UUID.fastUUID().toString();
@@ -37,12 +50,14 @@ public class TokenService {
         loginUser.setIdentity(identity);
         loginUser.setNickName(nickName);
         loginUser.setHeadImage(headImage);
-        redisService.setCacheObject(tokenKey, loginUser, CacheConstants.EXP, TimeUnit.MINUTES);
+        redisService.setCacheObject(tokenKey, loginUser, exp, TimeUnit.MINUTES);
 
         return token;
     }
 
-    // 在身份认证通过之后才会调用的，并且在请求到达controller层之前在拦截器中调用
+    /**
+     * 在身份认证通过之后才会调用的，并且在请求到达controller层之前在拦截器中调用
+     */
     public void extendToken(Claims claims) {
         String userKey = getUserKey(claims);
         if (userKey == null) {
@@ -50,8 +65,8 @@ public class TokenService {
         }
         String tokenKey = getTokenKey(userKey);
         Long expire = redisService.getExpire(tokenKey, TimeUnit.MINUTES);
-        if (expire != null && expire < CacheConstants.REFRESH_TIME) {
-            redisService.expire(tokenKey, CacheConstants.EXP, TimeUnit.MINUTES);
+        if (expire != null && expire < refreshTime) {
+            redisService.expire(tokenKey, exp, TimeUnit.MINUTES);
         }
     }
 
@@ -63,11 +78,19 @@ public class TokenService {
         return redisService.getCacheObject(getTokenKey(userKey), LoginUser.class);
     }
 
+    public LoginUser getLoginUser(String userKey) {
+        return redisService.getCacheObject(getTokenKey(userKey), LoginUser.class);
+    }
+
     public boolean deleteLoginUser(String token, String secret) {
         String userKey = getUserKey(token, secret);
         if (userKey == null) {
             return false;
         }
+        return redisService.deleteObject(getTokenKey(userKey));
+    }
+
+    public boolean deleteLoginUser(String userKey) {
         return redisService.deleteObject(getTokenKey(userKey));
     }
 
