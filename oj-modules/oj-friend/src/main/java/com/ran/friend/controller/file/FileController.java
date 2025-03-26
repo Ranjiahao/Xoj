@@ -1,4 +1,4 @@
-package com.ran.friend.controller.question.file;
+package com.ran.friend.controller.file;
 
 import com.ran.common.core.controller.BaseController;
 import com.ran.common.core.domain.R;
