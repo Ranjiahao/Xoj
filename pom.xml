@@ -49,6 +49,7 @@
 		<oj-common-mybatis.version>0.0.1-SNAPSHOT</oj-common-mybatis.version>
 		<oj-common-message.version>0.0.1-SNAPSHOT</oj-common-message.version>
 		<oj-common-file.version>0.0.1-SNAPSHOT</oj-common-file.version>
+		<oj-common-rabbitmq.version>0.0.1-SNAPSHOT</oj-common-rabbitmq.version>
 		<oj-api.version>0.0.1-SNAPSHOT</oj-api.version>
 	</properties>
 

@@ -5,26 +5,26 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.ran</groupId>
-        <artifactId>Xoj</artifactId>
+        <artifactId>oj-common</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>oj-common</artifactId>
-    <packaging>pom</packaging>
-    <modules>
-        <module>oj-common-core</module>
-        <module>oj-common-security</module>
-        <module>oj-common-redis</module>
-        <module>oj-common-mybatis</module>
-        <module>oj-common-message</module>
-        <module>oj-common-file</module>
-        <module>oj-common-rabbitmq</module>
-    </modules>
+    <artifactId>oj-common-rabbitmq</artifactId>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-amqp</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.ran</groupId>
+            <artifactId>oj-common-core</artifactId>
+            <version>${oj-common-core.version}</version>
+        </dependency>
+    </dependencies>
 </project>

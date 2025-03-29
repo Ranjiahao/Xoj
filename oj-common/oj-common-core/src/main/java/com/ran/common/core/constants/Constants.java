@@ -11,4 +11,9 @@ public class Constants {
     public static final Integer TRUE = 1;
 
     public static final Integer FALSE = 0;
+
+    /**
+     * UTF-8 字符集
+     */
+    public static final String UTF8 = "UTF-8";
 }

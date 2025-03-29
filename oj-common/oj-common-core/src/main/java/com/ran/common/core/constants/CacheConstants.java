@@ -66,17 +66,4 @@ public class CacheConstants {
      * eg: key={exam:question:list:+竞赛id} v={题目id列表}
      */
     public static final String EXAM_QUESTION_LIST = "exam:question:list:";
-
-
-    public static final String QUESTION_HOST_LIST = "q:h:l";
-
-    public static final String USER_MESSAGE_LIST = "u:m:l:";
-
-    public static final String MESSAGE_DETAIL = "m:d:";
-
-    public static final String EXAM_RANK_LIST = "e:r:l:";
-
-    public static final long DEFAULT_START = 0;
-
-    public static final long DEFAULT_END = -1;
 }
