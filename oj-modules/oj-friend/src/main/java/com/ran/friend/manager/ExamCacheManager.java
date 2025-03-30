@@ -83,6 +83,21 @@ public class ExamCacheManager {
         return userExamList.stream().map(UserExam::getExamId).collect(Collectors.toList());
     }
 
+    public Exam getExamDetail(Long examId) {
+        String detailKey = getDetailKey(examId);
+        Exam exam = redisService.getCacheObject(detailKey, Exam.class);
+        if (exam != null) {
+            return exam;
+        }
+        // redis中没有数据，从数据库中查询
+        exam = examMapper.selectById(examId);
+        if (exam == null) {
+            throw new ServiceException(ResultCode.EXAM_NOT_EXISTS);
+        }
+        redisService.setCacheObject(detailKey, exam);
+        return exam;
+    }
+
     public void addUserExamCache(Long userId, Long examId) {
         String userExamListKey = getUserExamListKey(userId);
         redisService.leftPushForList(userExamListKey, examId);
@@ -161,6 +176,16 @@ public class ExamCacheManager {
         redisService.expire(getExamQuestionListKey(examId), seconds, TimeUnit.SECONDS);
     }
 
+    public Long getListSize(Integer examListType, Long userId) {
+        String examListKey = getExamListKey(examListType, userId);
+        return redisService.getListSize(examListKey);
+    }
+
+    public Long getExamQuestionListSize(Long examId) {
+        String examQuestionListKey = getExamQuestionListKey(examId);
+        return redisService.getListSize(examQuestionListKey);
+    }
+
     private List<ExamVO> getExamListByDB(ExamQueryDTO examQueryDTO, Long userId) {
         PageHelper.startPage(examQueryDTO.getPageNum(), examQueryDTO.getPageSize());
         if (ExamListType.USER_EXAM_LIST.getValue().equals(examQueryDTO.getType())) {
@@ -191,16 +216,6 @@ public class ExamCacheManager {
             return null;
         }
         return examVOList;
-    }
-
-    public Long getListSize(Integer examListType, Long userId) {
-        String examListKey = getExamListKey(examListType, userId);
-        return redisService.getListSize(examListKey);
-    }
-
-    public Long getExamQuestionListSize(Long examId) {
-        String examQuestionListKey = getExamQuestionListKey(examId);
-        return redisService.getListSize(examQuestionListKey);
     }
 
     private String getExamListKey(Integer examListType, Long userId) {
