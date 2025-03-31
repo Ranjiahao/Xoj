@@ -20,11 +20,6 @@
     <dependencies>
         <dependency>
             <groupId>com.ran</groupId>
-            <artifactId>oj-common-core</artifactId>
-            <version>${oj-common-core.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.ran</groupId>
             <artifactId>oj-common-redis</artifactId>
             <version>${oj-common-redis.version}</version>
         </dependency>
