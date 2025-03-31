@@ -42,6 +42,7 @@
 		<javax-activation.version>1.1.1</javax-activation.version>
 		<org-glassfish-jaxb.version>2.3.3</org-glassfish-jaxb.version>
 		<docker-java.version>3.4.2</docker-java.version>
+		<xxl-job.version>3.0.0</xxl-job.version>
 
 		<oj-common-core.version>0.0.1-SNAPSHOT</oj-common-core.version>
 		<oj-common-security.version>0.0.1-SNAPSHOT</oj-common-security.version>

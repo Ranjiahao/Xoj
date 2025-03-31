@@ -66,4 +66,22 @@ public class CacheConstants {
      * eg: key={exam:question:list:+竞赛id} v={题目id列表}
      */
     public static final String EXAM_QUESTION_LIST = "exam:question:list:";
+
+    /**
+     * 用户消息列表缓存 <p>
+     * eg: key={user:message:list:+用户id} v={消息id列表}
+     */
+    public static final String USER_MESSAGE_LIST = "user:message:list:";
+
+    /**
+     * 用户消息详情缓存 <p>
+     * eg: key={message:detail:+消息id} v={MessageText类型数据结构}
+     */
+    public static final String MESSAGE_DETAIL = "message:detail:";
+
+    /**
+     * 竞赛排名列表缓存 <p>
+     * eg: key={exam:rank:list:+竞赛id} v={UserScore类型数据结构列表}
+     */
+    public static final String EXAM_RANK_LIST = "exam:rank:list:";
 }
