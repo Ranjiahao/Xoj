@@ -13,6 +13,8 @@ import com.ran.common.security.exception.ServiceException;
 import com.ran.friend.domain.exam.Exam;
 import com.ran.friend.domain.exam.ExamQuestion;
 import com.ran.friend.domain.exam.dto.ExamQueryDTO;
+import com.ran.friend.domain.exam.dto.ExamRankDTO;
+import com.ran.friend.domain.exam.vo.ExamRankVO;
 import com.ran.friend.domain.exam.vo.ExamVO;
 import com.ran.friend.domain.user.UserExam;
 import com.ran.friend.mapper.exam.ExamMapper;
@@ -81,6 +83,12 @@ public class ExamCacheManager {
         }
         refreshCache(ExamListType.USER_EXAM_LIST.getValue(), userId);
         return userExamList.stream().map(UserExam::getExamId).collect(Collectors.toList());
+    }
+
+    public List<ExamRankVO> getExamRankList(ExamRankDTO examRankDTO) {
+        int start = (examRankDTO.getPageNum() - 1) * examRankDTO.getPageSize();
+        int end = start + examRankDTO.getPageSize() - 1;
+        return redisService.getCacheListByRange(getExamRankListKey(examRankDTO.getExamId()), start, end, ExamRankVO.class);
     }
 
     public Exam getExamDetail(Long examId) {
@@ -176,6 +184,14 @@ public class ExamCacheManager {
         redisService.expire(getExamQuestionListKey(examId), seconds, TimeUnit.SECONDS);
     }
 
+    public void refreshExamRankCache(Long examId) {
+        List<ExamRankVO> examRankVOList = userExamMapper.selectExamRankList(examId);
+        if (CollectionUtil.isEmpty(examRankVOList)) {
+            return;
+        }
+        redisService.rightPushAll(getExamRankListKey(examId), examRankVOList);
+    }
+
     public Long getListSize(Integer examListType, Long userId) {
         String examListKey = getExamListKey(examListType, userId);
         return redisService.getListSize(examListKey);
@@ -184,6 +200,10 @@ public class ExamCacheManager {
     public Long getExamQuestionListSize(Long examId) {
         String examQuestionListKey = getExamQuestionListKey(examId);
         return redisService.getListSize(examQuestionListKey);
+    }
+
+    public Long getRankListSize(Long examId) {
+        return redisService.getListSize(getExamRankListKey(examId));
     }
 
     private List<ExamVO> getExamListByDB(ExamQueryDTO examQueryDTO, Long userId) {
@@ -238,5 +258,9 @@ public class ExamCacheManager {
 
     private String getExamQuestionListKey(Long examId) {
         return CacheConstants.EXAM_QUESTION_LIST + examId;
+    }
+
+    private String getExamRankListKey(Long examId) {
+        return CacheConstants.EXAM_RANK_LIST + examId;
     }
 }

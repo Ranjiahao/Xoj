@@ -4,6 +4,7 @@ import com.ran.common.core.controller.BaseController;
 import com.ran.common.core.domain.R;
 import com.ran.common.core.domain.TableDataInfo;
 import com.ran.friend.domain.exam.dto.ExamQueryDTO;
+import com.ran.friend.domain.exam.dto.ExamRankDTO;
 import com.ran.friend.service.exam.IExamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +21,11 @@ public class ExamController extends BaseController {
     @GetMapping("/semiLogin/list")
     public TableDataInfo List(ExamQueryDTO examQueryDTO) {
         return examService.List(examQueryDTO);
+    }
+
+    @GetMapping("/rank/list")
+    public TableDataInfo rankList(ExamRankDTO examRankDTO) {
+        return examService.rankList(examRankDTO);
     }
 
     @GetMapping("/getFirstQuestion")

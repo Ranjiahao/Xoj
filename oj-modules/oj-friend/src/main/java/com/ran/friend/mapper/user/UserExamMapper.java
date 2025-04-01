@@ -11,4 +11,6 @@ import java.util.List;
 public interface UserExamMapper extends BaseMapper<UserExam> {
 
     List<ExamVO> selectUserExamList(Long userId);
+
+    List<ExamRankVO> selectExamRankList(Long examId);
 }

@@ -7,9 +7,14 @@ import com.ran.common.core.constants.Constants;
 import com.ran.common.core.domain.TableDataInfo;
 import com.ran.common.core.utils.ThreadLocalUtil;
 import com.ran.friend.domain.exam.dto.ExamQueryDTO;
+import com.ran.friend.domain.exam.dto.ExamRankDTO;
+import com.ran.friend.domain.exam.vo.ExamRankVO;
 import com.ran.friend.domain.exam.vo.ExamVO;
+import com.ran.friend.domain.user.vo.UserVO;
 import com.ran.friend.manager.ExamCacheManager;
+import com.ran.friend.manager.UserCacheManager;
 import com.ran.friend.mapper.exam.ExamMapper;
+import com.ran.friend.mapper.user.UserExamMapper;
 import com.ran.friend.service.exam.IExamService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +31,12 @@ public class ExamServiceImpl implements IExamService {
 
     @Autowired
     private ExamCacheManager examCacheManager;
+
+    @Autowired
+    private UserCacheManager userCacheManager;
+
+    @Autowired
+    private UserExamMapper userExamMapper;
 
     @Override
     public TableDataInfo List(ExamQueryDTO examQueryDTO) {
@@ -49,6 +60,28 @@ public class ExamServiceImpl implements IExamService {
         }
         assembleExamVOList(examVOList);
         return TableDataInfo.success(examVOList, total);
+    }
+
+    @Override
+    public TableDataInfo rankList(ExamRankDTO examRankDTO) {
+        Long total = examCacheManager.getRankListSize(examRankDTO.getExamId());
+        List<ExamRankVO> examRankVOList;
+        if (total == null || total <= 0) {
+            PageHelper.startPage(examRankDTO.getPageNum(), examRankDTO.getPageSize());
+            examRankVOList = userExamMapper.selectExamRankList(examRankDTO.getExamId());
+            total = new PageInfo<>(examRankVOList).getTotal();
+            examCacheManager.refreshExamRankCache(examRankDTO.getExamId());
+        } else {
+            examRankVOList = examCacheManager.getExamRankList(examRankDTO);
+            // 如果redis缓存出错，则可能从数据库中获取数据，并刷新缓存，total可能改变，所以需要重新获取
+            total = examCacheManager.getRankListSize(examRankDTO.getExamId());
+        }
+        if (CollectionUtil.isEmpty(examRankVOList)) {
+            return TableDataInfo.empty();
+        }
+        // 需要将用户昵称返回给前端
+        assembleExamRankVOList(examRankVOList);
+        return TableDataInfo.success(examRankVOList, total);
     }
 
     @Override
@@ -82,6 +115,17 @@ public class ExamServiceImpl implements IExamService {
             if (userExamIdList.contains(examVO.getExamId())) {
                 examVO.setEnter(true);
             }
+        }
+    }
+
+    private void assembleExamRankVOList(List<ExamRankVO> examRankVOList) {
+        if (CollectionUtil.isEmpty(examRankVOList)) {
+            return;
+        }
+        for (ExamRankVO examRankVO : examRankVOList) {
+            Long userId = examRankVO.getUserId();
+            UserVO user = userCacheManager.getUserById(userId);
+            examRankVO.setNickName(user.getNickName());
         }
     }
 
