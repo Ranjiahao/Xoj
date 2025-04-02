@@ -16,4 +16,8 @@ public class Constants {
      * UTF-8 字符集
      */
     public static final String UTF8 = "UTF-8";
+
+    public static final int HOST_QUESTION_LIST_START = 1;
+
+    public static final int HOST_QUESTION_LIST_END = 5;
 }

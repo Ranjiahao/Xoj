@@ -29,4 +29,17 @@
             </if>
         </where>
     </select>
+
+    <select id="selectHostQuestionList" resultType="java.lang.Long">
+        SELECT
+            question_id
+        FROM
+            tb_user_submit
+        WHERE
+            exam_id is null
+        GROUP BY
+            question_id
+        ORDER BY
+            COUNT(question_id) DESC
+    </select>
 </mapper>

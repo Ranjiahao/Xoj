@@ -84,4 +84,10 @@ public class CacheConstants {
      * eg: key={exam:rank:list:+竞赛id} v={UserScore类型数据结构列表}
      */
     public static final String EXAM_RANK_LIST = "exam:rank:list:";
+
+    /**
+     * 题目热榜列表缓存 <p>
+     * eg: key={question:hot:list} v={题目id列表}
+     */
+    public static final String QUESTION_HOST_LIST = "question:hot:list";
 }

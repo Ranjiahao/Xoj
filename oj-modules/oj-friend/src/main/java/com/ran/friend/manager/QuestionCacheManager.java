@@ -26,6 +26,10 @@ public class QuestionCacheManager {
         return redisService.getListSize(CacheConstants.QUESTION_LIST);
     }
 
+    public Long getHostListSize() {
+        return redisService.getListSize(CacheConstants.QUESTION_HOST_LIST);
+    }
+
     public void refreshCache() {
         List<Question> questionList = questionMapper.selectList(new LambdaQueryWrapper<Question>()
                 .select(Question::getQuestionId).orderByDesc(Question::getCreateTime));
@@ -51,5 +55,16 @@ public class QuestionCacheManager {
             throw new ServiceException(ResultCode.FAILED_LAST_QUESTION);
         }
         return redisService.indexForList(CacheConstants.QUESTION_LIST, index + 1, Long.class);
+    }
+
+    public List<Long> getHostList() {
+        return redisService.getCacheListByRange(CacheConstants.QUESTION_HOST_LIST, 0, -1, Long.class);
+    }
+
+    public void refreshHotQuestionList(List<Long> hotQuestionIdList) {
+        if (CollectionUtil.isEmpty(hotQuestionIdList)) {
+            return;
+        }
+        redisService.rightPushAll(CacheConstants.QUESTION_HOST_LIST, hotQuestionIdList);
     }
 }
