@@ -8,6 +8,7 @@ import com.aliyun.dysmsapi20170525.models.SendSmsResponseBody;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -15,16 +16,17 @@ import java.util.Map;
 
 @Component
 @Slf4j
+@RefreshScope
 public class AliSmsService {
 
     @Autowired
     private Client aliClient;
 
     // 业务配置
-    @Value("${sms.aliyun.templateCode:}")
+    @Value("${sms.aliyun.templateCode:SMS_154950909}")
     private String templateCode;
 
-    @Value("${sms.aliyun.sing-name:}")
+    @Value("${sms.aliyun.sing-name:阿里云短信测试}")
     private String singName;
 
     /**
@@ -39,7 +41,7 @@ public class AliSmsService {
     /**
      * 发送模板消息
      */
-    public boolean sendTempMessage(String phone, String singName, String templateCode,
+    private boolean sendTempMessage(String phone, String singName, String templateCode,
                                    Map<String, String> params) {
         SendSmsRequest sendSmsRequest = new SendSmsRequest();
         sendSmsRequest.setPhoneNumbers(phone);

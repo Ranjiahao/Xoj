@@ -3,10 +3,12 @@ package com.ran.common.message.config;
 import com.aliyun.dysmsapi20170525.Client;
 import com.aliyun.teaopenapi.models.Config;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
+@RefreshScope
 public class AliSmsConfig {
 
     @Value("${sms.aliyun.accessKeyId:}")
@@ -15,7 +17,7 @@ public class AliSmsConfig {
     @Value("${sms.aliyun.accessKeySecret:}")
     private String accessKeySecret;
 
-    @Value("${sms.aliyun.endpoint:}")
+    @Value("${sms.aliyun.endpoint:dysmsapi.aliyuncs.com}")
     private String endpoint;
 
     @Bean("aliClient")

@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: oj-judge
+  profiles:
+    active: dev
+  cloud:
+    nacos:
+      server-addr: http://localhost:8848
+      config:
+        namespace: ${spring.profiles.active:dev} # 默认为dev
+---
+spring:
+  config:
+    import:
+      - nacos:common.yaml?group=oj-judge
+      - nacos:mysql.yaml?group=all
+      - nacos:jwt.yaml?group=all
+      - nacos:rabbitmq.yaml?group=all
+    activate:
+      on-profile: dev

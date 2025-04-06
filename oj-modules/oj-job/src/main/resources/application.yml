@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: oj-job
+  profiles:
+    active: dev
+  cloud:
+    nacos:
+      server-addr: http://localhost:8848
+      config:
+        namespace: ${spring.profiles.active:dev} # 默认为dev
+---
+spring:
+  config:
+    import:
+      - nacos:common.yaml?group=oj-job
+      - nacos:redis.yaml?group=all
+      - nacos:mysql.yaml?group=all
+      - nacos:jwt.yaml?group=all
+    activate:
+      on-profile: dev

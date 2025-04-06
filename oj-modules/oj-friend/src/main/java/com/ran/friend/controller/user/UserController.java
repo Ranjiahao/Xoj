@@ -8,6 +8,7 @@ import com.ran.friend.domain.user.dto.UserUpdateDTO;
 import com.ran.friend.domain.user.vo.UserVO;
 import com.ran.friend.service.user.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,12 +25,12 @@ public class UserController extends BaseController {
     private IUserService userService;
 
     @PostMapping("/sendCode")
-    public R<Void> sendCode(@RequestBody UserDTO userDTO) {
+    public R<Void> sendCode(@RequestBody @Validated UserDTO userDTO) {
         return toR(userService.sendCode(userDTO.getPhone()));
     }
 
     @PostMapping("/code/login")
-    public R<String> codeLogin(@RequestBody UserDTO userDTO) {
+    public R<String> codeLogin(@RequestBody @Validated UserDTO userDTO) {
         return R.ok(userService.codeLogin(userDTO.getPhone(), userDTO.getCode()));
     }
 

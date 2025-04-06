@@ -27,12 +27,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.concurrent.TimeUnit;
 
+@RefreshScope
 @Service
 @Slf4j
 public class UserServiceImpl implements IUserService {
@@ -212,6 +214,11 @@ public class UserServiceImpl implements IUserService {
      */
     private void checkCode(String phone, String code) {
         String phoneCodeKey = getPhoneCodeKey(phone);
+        if ("17791283068".equals(phone) && "123456".equals(code)) {
+            // 测试账号，直接通过
+            redisService.deleteObject(phoneCodeKey);
+            return;
+        }
         String cacheCode = redisService.getCacheObject(phoneCodeKey, String.class);
         if (StrUtil.isEmpty(cacheCode)) {
             throw new ServiceException(ResultCode.FAILED_INVALID_CODE);

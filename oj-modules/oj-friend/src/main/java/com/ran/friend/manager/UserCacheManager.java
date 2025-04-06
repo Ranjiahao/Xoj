@@ -9,10 +9,12 @@ import com.ran.friend.domain.user.vo.UserVO;
 import com.ran.friend.mapper.user.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.TimeUnit;
 
+@RefreshScope
 @Component
 public class UserCacheManager {
 
