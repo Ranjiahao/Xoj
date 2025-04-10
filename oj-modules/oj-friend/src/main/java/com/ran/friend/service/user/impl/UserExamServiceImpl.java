@@ -40,11 +40,14 @@ public class UserExamServiceImpl implements IUserExamService {
             throw new ServiceException(ResultCode.EXAM_STARTED);
         }
         Long userId = ThreadLocalUtil.get(Constants.USER_ID, Long.class);
-        examCacheManager.getUserExamIdList(userId).forEach(id -> {
-            if (id.equals(examId)) {
-                throw new ServiceException(ResultCode.USER_EXAM_HAS_ENTER);
-            }
-        });
+        List<Long> examIds = examCacheManager.getUserExamIdList(userId);
+        if (examIds != null) {
+            examIds.forEach(id -> {
+                if (id != null && id.equals(examId)) {
+                    throw new ServiceException(ResultCode.USER_EXAM_HAS_ENTER);
+                }
+            });
+        }
         examCacheManager.addUserExamCache(userId, examId);
         UserExam userExam = new UserExam();
         userExam.setExamId(examId);
